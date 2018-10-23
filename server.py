@@ -10,7 +10,7 @@ def main():
 @app.route("/SignUp")
 def signUp():
     #return render_template('index.html')
-    return "Placeholder for sign up page"
+    return render_template('signUp.html')
 
 
 @app.route("/SignIn")

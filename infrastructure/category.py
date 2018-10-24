@@ -3,6 +3,7 @@ class Category:
     import pandas as pd
     import numpy as np
 
+
     def __init__(self, name, databaseLoc, inactiveIndices=None):
         self.inactive = inactiveIndices
         self.name = name
@@ -26,9 +27,10 @@ class Category:
         if entry in self.active:
 
             self.active.remove(entry)
-            return 1
+            return True
 
-        return -1
+        return False
+
 
     def getQuestion(self, entry, random=False):
 

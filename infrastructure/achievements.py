@@ -34,3 +34,7 @@ class Achievement:
     def Name(self):
         return self.name
 
+    def completionMessage(self):
+        return "You've completed: " + self.name + ". Good job!"
+
+

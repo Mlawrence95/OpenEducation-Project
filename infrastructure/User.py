@@ -1,9 +1,9 @@
 class User:
 
-    def __init__(self, userid, databaseLoc, achievements, etc):
+    def __init__(self, userid, databaseLoc):
         self.__userID = userid
         self.database = databaseLoc
-        self.achievements = achievements
+        #self.achievements = achievements
 
         self.db = self.database.getDB()
 
@@ -13,8 +13,16 @@ class User:
         looks for user's information in mySQL database
         :return:
         """
+        # TODO
         return self.db.getUser(self.__userID)
 
     
 
+    def trophies(self):
+        ach = []
 
+        for trophy in self.achievements:
+            if trophy.isDone():
+                ach += [trophy]
+
+        return ach

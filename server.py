@@ -78,3 +78,7 @@ conn.close()
 
 if __name__ == "__main__":
     app.run()
+
+
+
+# Thank you to Jay Raj, @jay3dec, for help and inspiration

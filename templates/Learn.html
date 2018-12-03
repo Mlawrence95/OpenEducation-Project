@@ -55,7 +55,11 @@
 <form action = "/Learn" method = "POST" enctype="UTF-8">
 
 <BR>
-Check the answer to each multiple-choice question, and click on the "Check Answer" button to submit the information.
+
+<div class="container">
+Click the best button for each multiple-choice question to submit your answer.
+</div>
+
 <BR>
 <br>
 
@@ -70,7 +74,7 @@ Check the answer to each multiple-choice question, and click on the "Check Answe
      </tr>  -->
 
 <!--     <input type='submit' value=' {{q | safe}}' name=' {{a | safe}}' />{{a | safe}}
- -->    <input type='submit' value=' {{q | safe}}' name='submission' />{{a | safe}}
+ -->    <input type='submit' value=' {{q | capitalize}}' name='submission' />   {{ a | capitalize}}
 
     
  <br>
@@ -83,13 +87,6 @@ Check the answer to each multiple-choice question, and click on the "Check Answe
 <br>
 <br>
 
-<!-- <br>
-<br> -->
-
-<!-- 
-<input type="submit" value="Check Answer" name="submission">
-<input type="reset" value="Clear Form">
- -->
 </form>
 </body>
 

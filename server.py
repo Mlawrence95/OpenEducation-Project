@@ -5,17 +5,17 @@ from werkzeug import generate_password_hash, check_password_hash
 import pandas as pd
 import numpy as np
 import questionHelpers as qH
+import time
+from User import User
 
 mysql = MySQL()
 app = Flask(__name__)
 
 cachedAnswers = [] 
-defaultUser = "Mike"
-
-
+lastIndex = 0
 
 # Database information is stored in external json for privacy
-
+# database not necessary in current implementation
 keys = 'mySQLkeys.json'
 with open(keys) as f:
     serverKeys = json.load(f)
@@ -29,40 +29,61 @@ mysql.init_app(app)
 
 
 # Abandon MySQL and read Pandas
-# dataCSV = pd.read_csv("data/split.csv")
-
 split = pd.read_csv('data/split.csv')
 split['Q only'] = split['question'].apply(qH.getQuestion)
 cleanSplit = split[~split['question'].apply(qH.hasChart)].astype(str).reset_index()
 
-# begin pages
 
+defaultUser = User(email="mikelawrence@berkeley.edu", name="Mike", data=cleanSplit)
+
+
+###############
+# Begin Pages #
+###############
+
+
+"""
+Home Page
+"""
 @app.route("/")
 def main(user=None):
 
     if user == None:
         user = defaultUser
 
-    return render_template('index.html', user=user)
+    return render_template('index.html', user=user.name)
 
 
+"""
+Sign up page
+Not functional without MySQL
+"""
 @app.route("/SignUp")
 def signUp(user=None):
 
     if user == None:
         user = defaultUser
 
-    return render_template('signUp.html', user=user)
+    return render_template('signUp.html', user=user.name)
 
 
-@app.route("/SignIn")
+"""
+Sign in Page
+Not functional without mySQL
+"""
+@app.route("/SignIn", methods=["GET"])
 def signIn(user=None):
 
     if user == None:
         user = defaultUser
 
-    return render_template('SignIn.html', user=user)
+    return render_template('SignIn.html', user=user.name)
 
+
+"""
+Form grabber for new user sign up
+Not in use without MySQL
+"""
 @app.route("/NewUser", methods=['POST', 'GET'])
 def NewUser(user=None):
 
@@ -108,9 +129,9 @@ def NewUser(user=None):
 
 
 
-    #return render_template('signUp.html')
-
-
+"""
+The quiz page
+"""
 @app.route("/Learn", methods=['GET', "POST"])
 def Learn(category=None, user=None):
 
@@ -118,20 +139,20 @@ def Learn(category=None, user=None):
         user = defaultUser
 
     global cachedAnswers
-    global total 
-    global answeredCorrectly
+    global lastIndex
 
+    # Handles Answers
     if request.method == "POST":
         
         printed =  "Actual is " + str(cachedAnswers[-1]) +", you got " + str(request.form['submission'])+". "
-        rightAnswer = str(cachedAnswers[-1]).lower().strip() == str(request.form['submission']).lower().strip()
+        rightAnswer = str(cachedAnswers[-1]) == str(request.form['submission']).lower().strip()
+        user.recordOutcome(lastIndex, str(request.form['submission']))
+        time.sleep(0.25)
 
-        if rightAnswer:
-            return printed + " Good job!"
+        # if rightAnswer:
+        #     return printed + " Good job!"
 
-        return printed
-
-
+        # return printed
 
     if category == None:
         Category = "Physics"
@@ -144,30 +165,36 @@ def Learn(category=None, user=None):
         myQIndex = np.random.choice(availableCount)
         output = qH.dynamicQuestionOutput(myQIndex, qs)
 
-        while len(output) < 6:
+        while (len(output) < 6) | (user.hasSeen(myQIndex)):
             myQIndex = np.random.choice(availableCount)
             output = qH.dynamicQuestionOutput(myQIndex, qs)
 
-        cachedAnswers += [output['Correct']]
+        if len(cachedAnswers) == 0:
+            cachedAnswers += [output['Correct'].lower().strip()]
 
+        elif cachedAnswers[-1] == output['Correct'].lower().strip(): 
+            pass
+        else:
+            cachedAnswers += [output['Correct'].lower().strip()]
 
-
+        lastIndex = myQIndex
         ans = qH.answers(output)
 
-        return render_template('Learn.html', output=output, category=Category, answers=ans, user=user)
+        return render_template('Learn.html', output=output, category=Category, answers=ans, user=user.name, correct=output['Correct'].lower().strip())
 
     return render_template('index.html')
 
 
-
-
+"""
+The dashboard page
+"""
 @app.route("/Dashboard", methods=['GET'])
 def Dashboard(user=None):
 
     if user == None:
-        user = defaultUser
+        user= defaultUser
 
-    return render_template('Dashboard.html', user=user)
+    return render_template('Dashboard.html', user=user.name)
 
 
 
@@ -177,9 +204,12 @@ if __name__ == "__main__":
 
 
 # Thank you to Jay Raj, @jay3dec, for help and inspiration
+
 # Miguel at https://blog.miguelgrinberg.com/post/about-me
 # had great tutorials on Flask
+
 # the blog at https://radiusofcircle.blogspot.com/2016/03/making-quiz-website-with-python.html
 # was immensely useful
+
 # https://pythonspot.com/flask-web-forms/
 # helped with forms 

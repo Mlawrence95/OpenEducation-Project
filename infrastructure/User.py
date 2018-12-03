@@ -1,28 +1,21 @@
 class User:
 
-    def __init__(self, userid, databaseLoc):
-        self.__userID = userid
-        self.database = databaseLoc
-        #self.achievements = achievements
+    def __init__(self, email, name, data):
+        self.email = email
+        self.name = name
+        self.data = data.copy()
 
-        self.db = self.database.getDB()
+    ## Wants:
+    ## performance history
+    ## a name to display
 
 
-    def getUser(self):
-        """
-        looks for user's information in mySQL database
-        :return:
-        """
-        # TODO
-        return self.db.getUser(self.__userID)
+    def recordOutcome(questionID, outcome):
+            self.data.loc[questionID] = outcome
 
-    
+    def getAllHistory():
+        return self.data
 
-    def trophies(self):
-        ach = []
-
-        for trophy in self.achievements:
-            if trophy.isDone():
-                ach += [trophy]
-
-        return ach
+    def getCategoricalHistory(category)
+        catData = self.data[self.data['subject'] == category]
+        return catData

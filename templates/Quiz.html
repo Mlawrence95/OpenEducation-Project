@@ -39,16 +39,18 @@
               </li>
 
               <li class="nav-item">
-                <a class="nav-link active" href="/Quiz">Quiz</a>
+                <a class="nav-link active" href="/Learn">Learn</a>
               </li>
 
           </ul>
 
-
       </nav>
 
+            <h3 class="text-muted">Sci-Kid Learn</h3>
+        </div>
 
-<h3>{{category | safe}}</h3>
+
+<h3 class="text-muted">{{category | safe}}</h3>
 
 <form action = "/Quiz" method = "POST" enctype="UTF-8">
 
@@ -64,27 +66,30 @@ Check the answer to each multiple-choice question, and click on the "Check Answe
 {% for q, a in answers.items() %}
 
      <!-- <tr>
-        <td><button type="button" class="btn btn-xs btn-danger"> "{{ a }}" </button></td>
-     </tr> -->
+        <td><button name="submission" type="submit" class="btn btn-xs"> {{ a|capitalize }} </button></td>
+     </tr>  -->
 
-    <input type='radio' value='{{q | safe}}' name='{{a | safe}}' />{{a | safe}}
-    <BR>
+<!--     <input type='submit' value=' {{q | safe}}' name=' {{a | safe}}' />{{a | safe}}
+ -->    <input type='submit' value=' {{q | safe}}' name='submission' />{{a | safe}}
+
+    
+ <br>
+ <br>
 
 {% endfor %}
 
-<!-- <input type="radio" name="1.The word which means house is" value="poisson">poisson<BR>
- -->
 
 </p>
-
 <br>
 <br>
 
 <!-- <br>
 <br> -->
-<input type="submit" value="Check Answer">
-<input type="reset" value="Clear Form">
 
+<!-- 
+<input type="submit" value="Check Answer" name="submission">
+<input type="reset" value="Clear Form">
+ -->
 </form>
 </body>
 

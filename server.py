@@ -140,6 +140,13 @@ def Learn(category=None):
 
 
 
+
+@app.route("/Dashboard", methods=['GET'])
+def Dashboard(user=None):
+    return render_template('Dashboard.html')
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 

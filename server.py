@@ -10,6 +10,7 @@ mysql = MySQL()
 app = Flask(__name__)
 
 cachedAnswers = [] 
+defaultUser = "Mike"
 
 
 
@@ -37,21 +38,37 @@ cleanSplit = split[~split['question'].apply(qH.hasChart)].astype(str).reset_inde
 # begin pages
 
 @app.route("/")
-def main():
-    return render_template('index.html')
+def main(user=None):
+
+    if user == None:
+        user = defaultUser
+
+    return render_template('index.html', user=user)
 
 
 @app.route("/SignUp")
-def signUp():
-    return render_template('signUp.html')
+def signUp(user=None):
+
+    if user == None:
+        user = defaultUser
+
+    return render_template('signUp.html', user=user)
 
 
 @app.route("/SignIn")
-def signIn():
-    return render_template('SignIn.html')
+def signIn(user=None):
+
+    if user == None:
+        user = defaultUser
+
+    return render_template('SignIn.html', user=user)
 
 @app.route("/NewUser", methods=['POST', 'GET'])
-def NewUser():
+def NewUser(user=None):
+
+    if user == None:
+        user = defaultUser
+
     try:
         _name = request.form['inputName']
         _username = request.form['inputUsername']
@@ -95,7 +112,10 @@ def NewUser():
 
 
 @app.route("/Learn", methods=['GET', "POST"])
-def Learn(category=None):
+def Learn(category=None, user=None):
+
+    if user == None:
+        user = defaultUser
 
     global cachedAnswers
     global total 
@@ -134,7 +154,7 @@ def Learn(category=None):
 
         ans = qH.answers(output)
 
-        return render_template('Learn.html', output=output, category=Category, answers=ans)
+        return render_template('Learn.html', output=output, category=Category, answers=ans, user=user)
 
     return render_template('index.html')
 
@@ -143,7 +163,11 @@ def Learn(category=None):
 
 @app.route("/Dashboard", methods=['GET'])
 def Dashboard(user=None):
-    return render_template('Dashboard.html')
+
+    if user == None:
+        user = defaultUser
+
+    return render_template('Dashboard.html', user=user)
 
 
 

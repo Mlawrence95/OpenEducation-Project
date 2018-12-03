@@ -14,6 +14,12 @@
 <meta charset="UTF-8"> 
 <title>Sci-Kid Learn</title>
 
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
  
 <body>
@@ -39,11 +45,15 @@
               </li>
 
               <li class="nav-item">
-                <a class="nav-link active" href="/Learn">Learn</a>
+                <a class="nav-link" href="/Learn">Learn</a>
               </li>
 
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link" href="/Dashboard">Dashboard</a>
+              </li> -->
+
+              <li class="nav-item">
+                <a class="glyphicon glyphicon-user" href="/Dashboard"> {{ user| safe}}</a>
               </li>
 
           </ul>
@@ -54,7 +64,10 @@
         </div>
 
 
-<h3 class="text-muted">{{category | safe}}</h3>
+<!-- <h3 class="text-muted">{{category | safe}}</h3>
+ -->
+ <h3 class="text-muted">Physics and Biology</h3>
+
 
 <form action = "/Learn" method = "POST" enctype="UTF-8">
 

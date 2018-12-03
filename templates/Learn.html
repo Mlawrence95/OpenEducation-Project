@@ -6,6 +6,35 @@
      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"> 
   -->
  <head>
+
+<script>
+	function onClick() {
+		var button = document.querySelector('.button');
+		button.onclick = function () {
+		 this.style.backgroundColor = "rgb(0,140,0)";
+		};
+	}
+</script>
+
+
+<!-- <style>
+.button {
+  &:hover {
+    background-color: lighten(grey, 5%);
+    cursor: pointer;
+    cursor: hand;
+  }
+  width: 100px;
+  height: 50px;
+  background-color: grey;
+  color: white;
+  text-align:center;
+  line-height:50px;
+  border-radius: 30px;
+}
+</style> -->
+
+
  <link rel="icon" href="data:,">
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -66,7 +95,7 @@
 
 <!-- <h3 class="text-muted">{{category | safe}}</h3>
  -->
- <h3 class="text-muted">Physics and Biology</h3>
+ <h3 class="text-muted">The Sciences</h3>
 
 
 <form action = "/Learn" method = "POST" enctype="UTF-8">
@@ -86,14 +115,18 @@ Click the best button for each multiple-choice question to submit your answer.
 
 {% for q, a in answers.items() %}
 
-     <!-- <tr>
-        <td><button name="submission" type="submit" class="btn btn-xs"> {{ a|capitalize }} </button></td>
-     </tr>  -->
+<!-- <tr> <td><button name="submission" type="submit" class="btn btn-xs"> {{ a|capitalize }} </button></td> </tr>  -->
+<!--     <input type='submit' value=' {{q | safe}}' name=' {{a | safe}}' />{{a | safe}} -->   
 
-<!--     <input type='submit' value=' {{q | safe}}' name=' {{a | safe}}' />{{a | safe}}
- -->    <input type='submit' value=' {{q | capitalize}}' name='submission' />   {{ a | capitalize}}
 
-    
+{% if a == correct%}
+	 <input type='submit' onclick="onClick()" value=' {{q | capitalize}}' name='submission' />   {{ a | capitalize}}
+{% else %}
+	 <input type='submit' value=' {{q | capitalize}}' name='submission' />   {{ a | capitalize}}
+{% endif %}
+
+
+
  <br>
  <br>
 

@@ -29,21 +29,30 @@ class User:
         qid = []
         answered = []
         correct = []
+        outcome = []
 
         for k, v in self.recorded.items():
+            assert type(k) == int
+            assert type(v) == str
+
             qid += [k]
             answered += [v]
             correct += [self.data.loc[k, "AnswerKey"]]
+            outcome += [self.data.loc[k, "AnswerKey"].strip().lower() == v.strip().lower()]
 
         qid = pd.Series(qid)
         answered = pd.Series(answered)
         correct = pd.Series(correct)
 
-        data = {"Question ID": qid,
-                "My Answer": answered,
-                "correct": correct}
+        data = {"QuestionID": qid,
+                "Response": answered,
+                "Correct": correct,
+                "Outcome": outcome}
 
-        return pd.DataFrame(data)
+        data = pd.DataFrame(data)
+        #data['Outcome'] = data['Response'] == data['Correct']
+
+        return data
 
     def htmlTable(self):
         return self.getPerformance().to_html()

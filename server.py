@@ -2,6 +2,10 @@ from flask import Flask, render_template, json, request
 from flask_mysqldb import MySQL
 from werkzeug import generate_password_hash, check_password_hash
 
+import pandas as pd
+import numpy as np
+import questionHelpers as qH
+
 mysql = MySQL()
 app = Flask(__name__)
 
@@ -19,6 +23,12 @@ app.config['MYSQL_DATABASE_HOST'] = serverKeys['host']
 mysql.init_app(app)
 
 
+# Abandon MySQL and read Pandas
+# dataCSV = pd.read_csv("data/split.csv")
+
+split = pd.read_csv('data/split.csv')
+split['Q only'] = split['question'].apply(qH.getQuestion)
+cleanSplit = split[~split['question'].apply(qH.hasChart)].astype(str).reset_index()
 
 # begin pages
 
@@ -46,6 +56,7 @@ def NewUser():
 
 
         if _name and _username and _password:
+            print(_name)
 
             serverConnection = mysql.connect()
             cursor = serverConnection.cursor()
@@ -65,8 +76,12 @@ def NewUser():
         else:
             return json.dumps({'html':'<span>Please enter the required fields.</span>'})
 
+
+
     except Exception as e:
         return json.dumps({'error':str(e)})
+
+
     finally:
         cursor.close() 
         serverConnection.close()
@@ -75,11 +90,41 @@ def NewUser():
 
     #return render_template('signUp.html')
 
+@app.route("/Quiz", methods=['GET', "POST"])
+def Quiz(category=None):
+
+    if category == None:
+        Category = "Physics"
+
+    if Category != None:
+
+        qs = cleanSplit[cleanSplit['subject'] == Category]
+        availableCount = qs.shape[0]
+
+        myQIndex = np.random.choice(availableCount)
+        output = qH.dynamicQuestionOutput(myQIndex, qs)
+
+        while len(output) < 6:
+            myQIndex = np.random.choice(availableCount)
+            output = qH.dynamicQuestionOutput(myQIndex, qs)
+
+
+
+        ans = qH.answers(output)
+
+        return render_template('Quiz.html', output=output, category=Category, answers=ans)
+
+    return render_template('index.html')
+
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
 
 
 
 # Thank you to Jay Raj, @jay3dec, for help and inspiration
+# Miguel at https://blog.miguelgrinberg.com/post/about-me
+# had great tutorials on Flask
+# the blog at https://radiusofcircle.blogspot.com/2016/03/making-quiz-website-with-python.html
+# was immensely useful as well

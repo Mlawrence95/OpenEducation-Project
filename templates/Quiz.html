@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!--
+     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"> 
+  -->
+ <head>
+ <link rel="icon" href="data:,">
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link href="https://getbootstrap.com/docs/3.3/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+<meta charset="UTF-8"> 
+<title>Sci-Kid Learn</title>
+
+</head>
+ 
+<body>
+ 
+    <div class="container">
+
+        <div class="header">
+
+           <nav>
+
+            <ul class="nav nav-pills pull-right">
+
+              <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/SignIn">Sign In</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/SignUp">Sign Up</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link active" href="/Quiz">Quiz</a>
+              </li>
+
+          </ul>
+
+
+      </nav>
+
+
+<h3>{{category | safe}}</h3>
+
+<form action = "/Quiz" method = "POST" enctype="UTF-8">
+
+<BR>
+Check the answer to each multiple-choice question, and click on the "Check Answer" button to submit the information.
+<BR>
+<br>
+
+<P> {{output.Question | safe}}<BR>
+<br>
+
+
+{% for q, a in answers.items() %}
+
+     <!-- <tr>
+        <td><button type="button" class="btn btn-xs btn-danger"> "{{ a }}" </button></td>
+     </tr> -->
+
+    <input type='radio' value='{{q | safe}}' name='{{a | safe}}' />{{a | safe}}
+    <BR>
+
+{% endfor %}
+
+<!-- <input type="radio" name="1.The word which means house is" value="poisson">poisson<BR>
+ -->
+
+</p>
+
+<br>
+<br>
+
+<!-- <br>
+<br> -->
+<input type="submit" value="Check Answer">
+<input type="reset" value="Clear Form">
+
+</form>
+</body>
+
+</html>

@@ -1,5 +1,6 @@
+import pandas as pd
+
 class User:
-    import pandas as pandas
     def __init__(self, email, name, data):
         self.email = email
         self.name = name
@@ -22,3 +23,28 @@ class User:
     def getCategoricalHistory(self, category):
         catData = self.data[self.data['subject'] == category]
         return catData
+
+    def getPerformance(self):
+
+        qid = []
+        answered = []
+        correct = []
+
+        for k, v in self.recorded.items():
+            qid += [k]
+            answered += [v]
+            correct += [self.data.loc[k, "AnswerKey"]]
+
+        qid = pd.Series(qid)
+        answered = pd.Series(answered)
+        correct = pd.Series(correct)
+
+        data = {"Question ID": qid,
+                "My Answer": answered,
+                "correct": correct}
+
+        return pd.DataFrame(data)
+
+    def htmlTable(self):
+        return self.getPerformance().to_html()
+

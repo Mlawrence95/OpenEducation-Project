@@ -194,7 +194,9 @@ def Dashboard(user=None):
     if user == None:
         user= defaultUser
 
-    return render_template('Dashboard.html', user=user.name)
+    table = user.htmlTable()
+
+    return render_template('Dashboard.html', user=user.name, table=table)
 
 
 

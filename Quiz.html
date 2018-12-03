@@ -65,28 +65,29 @@ Check the answer to each multiple-choice question, and click on the "Check Answe
 
 {% for q, a in answers.items() %}
 
-     <!-- <tr>
-        <td><button type="button" class="btn btn-xs btn-danger"> "{{ a }}" </button></td>
-     </tr> -->
+     <tr>
+        <td><button type="submit" class="btn btn-xs"> {{ a|capitalize }} </button></td>
+     </tr> 
 
-    <input type='radio' value=' {{q | safe}}' name=' {{a | safe}}' />{{a | safe}}
-    <BR>
+<!--     <input type='submit' value=' {{q | safe}}' name=' {{a | safe}}' />{{a | safe}}
+ -->    
+ <br>
+ <br>
 
 {% endfor %}
 
-<!-- <input type="radio" name="1.The word which means house is" value="poisson">poisson<BR>
- -->
 
 </p>
-
 <br>
 <br>
 
 <!-- <br>
 <br> -->
-<input type="submit" value="Check Answer">
-<input type="reset" value="Clear Form">
 
+<!-- 
+<input type="submit" value="Check Answer" name="submission">
+<input type="reset" value="Clear Form">
+ -->
 </form>
 </body>
 

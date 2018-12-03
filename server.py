@@ -90,8 +90,17 @@ def NewUser():
 
     #return render_template('signUp.html')
 
+cachedAnswer = None
+
 @app.route("/Quiz", methods=['GET', "POST"])
 def Quiz(category=None):
+
+    if request.method == "POST":
+        # if request.form['Check Answer'] == cachedAnswer:
+        #     print('Correct')
+        return str(request.form.get('name'))
+
+
 
     if category == None:
         Category = "Physics"
@@ -107,6 +116,8 @@ def Quiz(category=None):
         while len(output) < 6:
             myQIndex = np.random.choice(availableCount)
             output = qH.dynamicQuestionOutput(myQIndex, qs)
+
+        cachedAnswer = output['Correct']
 
 
 
@@ -127,4 +138,6 @@ if __name__ == "__main__":
 # Miguel at https://blog.miguelgrinberg.com/post/about-me
 # had great tutorials on Flask
 # the blog at https://radiusofcircle.blogspot.com/2016/03/making-quiz-website-with-python.html
-# was immensely useful as well
+# was immensely useful
+# https://pythonspot.com/flask-web-forms/
+# helped with forms 

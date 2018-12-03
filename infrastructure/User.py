@@ -19,6 +19,6 @@ class User:
     def getAllHistory():
         return self.recorded
 
-    def getCategoricalHistory(category)
+    def getCategoricalHistory(category):
         catData = self.data[self.data['subject'] == category]
         return catData

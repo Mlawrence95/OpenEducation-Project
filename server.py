@@ -34,7 +34,7 @@ split['Q only'] = split['question'].apply(qH.getQuestion)
 cleanSplit = split[~split['question'].apply(qH.hasChart)].astype(str).reset_index()
 
 
-defaultUser = User(email="mikelawrence@berkeley.edu", name="Mike", data=cleanSplit)
+defaultUser = User(email="Oski@berkeley.edu", name="Oski", data=cleanSplit)
 
 
 ###############
@@ -194,7 +194,9 @@ def Dashboard(user=None):
     if user == None:
         user= defaultUser
 
-    table = user.htmlTable()
+    #table = user.htmlTable()
+
+    table = user.joinOnOriginal().to_html()
 
     return render_template('Dashboard.html', user=user.name, table=table)
 

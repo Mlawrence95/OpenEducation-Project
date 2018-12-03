@@ -4,7 +4,7 @@ class User:
     def __init__(self, email, name, data):
         self.email = email
         self.name = name
-        self.data = data.copy()
+        self.data = data
         self.recorded = dict()
 
     ## Wants:
@@ -56,4 +56,14 @@ class User:
 
     def htmlTable(self):
         return self.getPerformance().to_html()
+
+    def joinOnOriginal(self):
+
+        perf = self.getPerformance()
+
+        keep = list(perf.columns) + ['schoolGrade', 'question', 'subject']
+        joined = perf.join(self.data, on='QuestionID')[keep]
+
+        return joined
+
 

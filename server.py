@@ -9,6 +9,10 @@ import questionHelpers as qH
 mysql = MySQL()
 app = Flask(__name__)
 
+cachedAnswers = [] 
+
+
+
 # Database information is stored in external json for privacy
 
 keys = 'mySQLkeys.json'
@@ -44,8 +48,7 @@ def signUp():
 
 @app.route("/SignIn")
 def signIn():
-    #return render_template('index.html')
-    return "Placeholder for sign in page"
+    return render_template('SignIn.html')
 
 @app.route("/NewUser", methods=['POST', 'GET'])
 def NewUser():
@@ -90,15 +93,23 @@ def NewUser():
 
     #return render_template('signUp.html')
 
-cachedAnswer = None
 
-@app.route("/Quiz", methods=['GET', "POST"])
-def Quiz(category=None):
+@app.route("/Learn", methods=['GET', "POST"])
+def Learn(category=None):
+
+    global cachedAnswers
+    global total 
+    global answeredCorrectly
 
     if request.method == "POST":
-        # if request.form['Check Answer'] == cachedAnswer:
-        #     print('Correct')
-        return str(request.form.get('name'))
+        
+        printed =  "Actual is " + str(cachedAnswers[-1]) +", you got " + str(request.form['submission'])+". "
+        rightAnswer = str(cachedAnswers[-1]).lower().strip() == str(request.form['submission']).lower().strip()
+
+        if rightAnswer:
+            return printed + " Good job!"
+
+        return printed
 
 
 
@@ -117,13 +128,13 @@ def Quiz(category=None):
             myQIndex = np.random.choice(availableCount)
             output = qH.dynamicQuestionOutput(myQIndex, qs)
 
-        cachedAnswer = output['Correct']
+        cachedAnswers += [output['Correct']]
 
 
 
         ans = qH.answers(output)
 
-        return render_template('Quiz.html', output=output, category=Category, answers=ans)
+        return render_template('Learn.html', output=output, category=Category, answers=ans)
 
     return render_template('index.html')
 

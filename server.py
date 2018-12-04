@@ -1,6 +1,7 @@
 from flask import Flask, render_template, json, request
 from flask_mysqldb import MySQL
 from werkzeug import generate_password_hash, check_password_hash
+import wikifier as wiki
 
 import pandas as pd
 import numpy as np
@@ -188,17 +189,38 @@ def Learn(category=None, user=None):
 """
 The dashboard page
 """
-@app.route("/Dashboard", methods=['GET'])
+@app.route("/Dashboard", methods=['GET','POST'])
 def Dashboard(user=None):
 
     if user == None:
         user= defaultUser
 
-    #table = user.htmlTable()
+    table = user.htmlTable(head=5)
+    df = user.getPerformance()
+    
 
-    table = user.joinOnOriginal().to_html()
+    physics_score = user.subjectAccuracy("Physics")
+    biology_score = user.subjectAccuracy("Biology")
 
-    return render_template('Dashboard.html', user=user.name, table=table)
+    biology_numerator = biology_score[1]
+    biology_denominator = biology_score[0]
+    biology_accuracy = int(np.round(biology_score[2], 2) * 100)
+
+    physics_numerator = physics_score[1]
+    physics_denominator = physics_score[0]
+    physics_accuracy = int(np.round(physics_score[2], 2) * 100)
+
+    total_questions = biology_denominator + physics_denominator
+
+
+    wikifier_results = {}
+    wikifier_results["Oski"] = "https://en.wikipedia.org/wiki/Oski_the_Bear"
+    wikifier_results["Mitosis"] = "https://en.wikipedia.org/wiki/Mitosis"
+    wikifier_results["Gravity"] = "https://en.wikipedia.org/wiki/Gravity"
+
+    return render_template('indexStudent.html', user=user.name, table=table, wikifier_results=wikifier_results, 
+        physics_numerator = physics_numerator, physics_denominator = physics_denominator, physics_accuracy = physics_accuracy, 
+        biology_accuracy = biology_accuracy, biology_numerator = biology_numerator, biology_denominator = biology_denominator, total_questions=total_questions)
 
 
 

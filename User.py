@@ -1,48 +1,51 @@
 import pandas as pd
+import os
+import pickle
 
 class User:
+
     def __init__(self, email, name, data):
         self.email = email
         self.name = name
         self.data = data
         self.recorded = dict()
+        self.dataDirectory = "userData/"
 
-    ## Wants:
-    ## performance history
-    ## a name to display
+        if self.returningUser():
+            self.retrieveData()
+
+
+    def returningUser(self):
+        return self.name in os.listdir(self.dataDirectory)
+
+    def storeData(self):
+        out = open(self.dataDirectory + self.name,'wb')
+        pickle.dump(self.recorded, out)
+        out.close()
+
+    def retrieveData(self):
+        file = open(self.dataDirectory + self.name,'rb')
+        new_dict = pickle.load(file)
+        file.close()
+
+        self.recorded = new_dict
+
+
 
     def hasSeen(self, questionID):
-        """
-        Returns true if questions has been answered already, 
-        else false
-        """
         return questionID in self.recorded.keys()
 
     def recordOutcome(self, questionID, outcome):
-        """
-        Given index of question and what the student answers
-
-        creates a record of the student's mark
-
-        returns nothing (void)
-        """
         self.recorded[questionID] = outcome
 
+        if len(self.recorded.keys()) % 10 == 0:
+            self.storeData()
+
+
     def getAllHistory(self):
-        """
-        returns dictionary of raw performance results
-        """
         return self.recorded
 
     def getPerformance(self):
-        """
-        returns dataframe of:
-
-        question id (questionID)
-        correct answer (correct)
-        student response (response)
-        if student was correct  (outcome)
-        """
 
         qid = []
         answered = []
@@ -68,21 +71,18 @@ class User:
                 "Outcome": outcome}
 
         data = pd.DataFrame(data)
+        #data['Outcome'] = data['Response'] == data['Correct']
+
         return data
 
-    def htmlTable(self):
-        """
-        Returns HTML rendering of joined performance table
-        """
-        return self.joinOnOriginal().to_html()
+
+    def htmlTable(self, head=None):
+        if head != None:
+            return self.joinOnOriginal().head(head).to_html(classes=["table-bordered", "table-striped", "table-hover"])
+
+        return self.joinOnOriginal().to_html(classes=["table-bordered", "table-striped", "table-hover"]) 
 
     def joinOnOriginal(self):
-        """
-        Joins performance data with starting data
-
-        returns dataframe of performance data as well
-        as the subject, school grade, and question
-        """
 
         perf = self.getPerformance()
         keep = list(perf.columns) + ['schoolGrade', 'question', 'subject']
@@ -91,23 +91,11 @@ class User:
         return joined
 
     def getSubject(self, category):
-        """
-        category is "Physics" or "Biology"
-
-        returns dataframe of those questions
-        that have been answered
-        """
         data = self.joinOnOriginal()
         subset = data[data['subject'] == category]
         return subset
 
     def subjectAccuracy(self, category):
-        """
-        category is "Physics" or "Biology"
-
-        returns [total answered, total correct, accuracy]
-        """
-
         data = self.getSubject(category)
 
         count = data.shape[0]

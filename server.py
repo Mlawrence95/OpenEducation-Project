@@ -35,7 +35,7 @@ split['Q only'] = split['question'].apply(qH.getQuestion)
 cleanSplit = split[~split['question'].apply(qH.hasChart)].astype(str).reset_index()
 
 
-defaultUser = User(email="Oski@berkeley.edu", name="Oski", data=cleanSplit)
+defaultUser = User(email="Oski@berkeley.edu", name="OskiBear", data=cleanSplit)
 
 
 ###############
@@ -147,6 +147,8 @@ def Learn(category=None, user=None):
         
         printed =  "Actual is " + str(cachedAnswers[-1]) +", you got " + str(request.form['submission'])+". "
         rightAnswer = str(cachedAnswers[-1]) == str(request.form['submission']).lower().strip()
+
+
         user.recordOutcome(lastIndex, str(request.form['submission']))
         time.sleep(0.25)
 
@@ -155,35 +157,33 @@ def Learn(category=None, user=None):
 
         # return printed
 
-    if category == None:
-        Category = "Physics"
 
-    if Category != None:
 
-        qs = cleanSplit[cleanSplit['subject'] == Category]
-        availableCount = qs.shape[0]
 
+    # qs = cleanSplit[cleanSplit['subject'] == Category]
+    availableCount = cleanSplit.shape[0]
+
+    myQIndex = np.random.choice(availableCount)
+    output = qH.dynamicQuestionOutput(myQIndex, cleanSplit)
+
+    while (len(output) < 6) | (user.hasSeen(myQIndex)):
         myQIndex = np.random.choice(availableCount)
         output = qH.dynamicQuestionOutput(myQIndex, qs)
 
-        while (len(output) < 6) | (user.hasSeen(myQIndex)):
-            myQIndex = np.random.choice(availableCount)
-            output = qH.dynamicQuestionOutput(myQIndex, qs)
+    if len(cachedAnswers) == 0:
+        cachedAnswers += [output['Correct'].lower().strip()]
 
-        if len(cachedAnswers) == 0:
-            cachedAnswers += [output['Correct'].lower().strip()]
+    elif cachedAnswers[-1] == output['Correct'].lower().strip(): 
+        pass
+    else:
+        cachedAnswers += [output['Correct'].lower().strip()]
 
-        elif cachedAnswers[-1] == output['Correct'].lower().strip(): 
-            pass
-        else:
-            cachedAnswers += [output['Correct'].lower().strip()]
+    lastIndex = myQIndex
+    ans = qH.answers(output)
 
-        lastIndex = myQIndex
-        ans = qH.answers(output)
+    return render_template('Learn.html', output=output,  answers=ans, user=user.name, correct=output['Correct'].lower().strip())
 
-        return render_template('Learn.html', output=output, category=Category, answers=ans, user=user.name, correct=output['Correct'].lower().strip())
-
-    return render_template('index.html')
+    # return render_template('index.html')
 
 
 """
@@ -196,7 +196,6 @@ def Dashboard(user=None):
         user= defaultUser
 
     table = user.htmlTable(head=5)
-    df = user.getPerformance()
     
 
     physics_score = user.subjectAccuracy("Physics")
@@ -221,6 +220,20 @@ def Dashboard(user=None):
     return render_template('indexStudent.html', user=user.name, table=table, wikifier_results=wikifier_results, 
         physics_numerator = physics_numerator, physics_denominator = physics_denominator, physics_accuracy = physics_accuracy, 
         biology_accuracy = biology_accuracy, biology_numerator = biology_numerator, biology_denominator = biology_denominator, total_questions=total_questions)
+
+
+
+@app.route("/AdminDashboard", methods=["GET"])
+def AdminDashboard(user=None):
+
+    if user == None:
+        user= defaultUser
+
+    table = user.htmlTable()
+
+    return render_template('adminDash.html', table=table, user = user.name)
+    
+
 
 
 

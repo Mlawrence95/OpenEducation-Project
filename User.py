@@ -15,6 +15,9 @@ class User:
             self.retrieveData()
 
 
+
+
+    ## Storage ##
     def returningUser(self):
         return self.name in os.listdir(self.dataDirectory)
 
@@ -32,6 +35,7 @@ class User:
 
 
 
+    ## Interface with Questions ##
     def hasSeen(self, questionID):
         return questionID in self.recorded.keys()
 
@@ -42,6 +46,8 @@ class User:
             self.storeData()
 
 
+
+    ## Get Performance Data for Dashboards, etc ##
     def getAllHistory(self):
         return self.recorded
 
@@ -58,8 +64,8 @@ class User:
 
             qid += [k]
             answered += [v]
-            correct += [self.data.loc[k, "AnswerKey"]]
-            outcome += [self.data.loc[k, "AnswerKey"].strip().lower() == v.strip().lower()]
+            correct += [self.data.iloc[k]["AnswerKey"]]
+            outcome += [self.data.iloc[k]["AnswerKey"].strip().lower() == v.strip().lower()]
 
         qid = pd.Series(qid)
         answered = pd.Series(answered)
@@ -71,7 +77,6 @@ class User:
                 "Outcome": outcome}
 
         data = pd.DataFrame(data)
-        #data['Outcome'] = data['Response'] == data['Correct']
 
         return data
 

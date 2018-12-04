@@ -20,10 +20,6 @@ class User:
     def getAllHistory(self):
         return self.recorded
 
-    def getCategoricalHistory(self, category):
-        catData = self.data[self.data['subject'] == category]
-        return catData
-
     def getPerformance(self):
 
         qid = []
@@ -60,10 +56,22 @@ class User:
     def joinOnOriginal(self):
 
         perf = self.getPerformance()
-
         keep = list(perf.columns) + ['schoolGrade', 'question', 'subject']
         joined = perf.join(self.data, on='QuestionID')[keep]
 
         return joined
 
+    def getSubject(self, category):
+        data = self.joinOnOriginal()
+        subset = data[data['subject'] == category]
+        return subset
+
+    def subjectAccuracy(self, category):
+        data = self.getSubject(category)
+
+        count = data.shape[0]
+        correct = data['Outcome'].sum()
+        accuracy = data['Outcome'].mean()
+
+        return [count, correct, accuracy]
 

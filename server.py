@@ -168,7 +168,7 @@ def Learn(category=None, user=None):
 
     while (len(output) < 6) | (user.hasSeen(myQIndex)):
         myQIndex = np.random.choice(availableCount)
-        output = qH.dynamicQuestionOutput(myQIndex, qs)
+        output = qH.dynamicQuestionOutput(myQIndex, cleanSplit)
 
     if len(cachedAnswers) == 0:
         cachedAnswers += [output['Correct'].lower().strip()]

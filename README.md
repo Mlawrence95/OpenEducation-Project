@@ -1,5 +1,5 @@
 # OpenEducation-Project
-A project to construct an open-source, ML-powered education tool
+A project to construct an open-source, ML-powered education tool. Presented at KDD 2019 with [accompanying paper](https://www.kdd.org/kdd2019/docs/SciKid_Learn.pdf)
 
 # Features
 
